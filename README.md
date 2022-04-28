@@ -6,7 +6,7 @@ Projeto para disciplina de Linguagem de Programação 1 IMD0030 2022.1
 
 O trabalho é em dupla (não pode ser individual) e pode ser submetido via SIGAA (arquivo compactado com todo o código-fonte) ou via GitHub Classroom.
 
-Integrante 1: Nome Matrícula: Giselle Neres de Oliveira e Silva, 20210065900
+Integrante 1: Giselle Neres de Oliveira e Silva, 20210065900
 
 Integrante 2: Nome Matrícula:
 
