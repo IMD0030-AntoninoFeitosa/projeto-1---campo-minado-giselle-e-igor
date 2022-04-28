@@ -6,7 +6,7 @@ Projeto para disciplina de Linguagem de Programação 1 IMD0030 2022.1
 
 O trabalho é em dupla (não pode ser individual) e pode ser submetido via SIGAA (arquivo compactado com todo o código-fonte) ou via GitHub Classroom.
 
-Integrante 1: Nome Matrícula:
+Integrante 1: Nome Matrícula: Giselle Neres de Oliveira e Silva, 20210065900
 
 Integrante 2: Nome Matrícula:
 
@@ -72,4 +72,3 @@ As seguintes perguntas podem ser respondidas para guiar o desenvolvimento do sis
 4. Exite alguma relação entre as informações, isto é, elas podem ser agrupadas representando um mesmo conceito?
 5. Como as informações serão representadas no programa?
 6. Como as informações são transformadas, manipuladas e exibidas ao longo do programa?
-
