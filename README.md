@@ -8,7 +8,7 @@ O trabalho é em dupla (não pode ser individual) e pode ser submetido via SIGAA
 
 Integrante 1: Giselle Neres de Oliveira e Silva, 20210065900
 
-Integrante 2: Nome Matrícula:
+Integrante 2: Igor Vicente Lourenço Silva, 20210046360
 
 ## O Jogo
 
