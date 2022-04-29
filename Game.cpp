@@ -6,7 +6,7 @@
 
 #include "Game.h"
 
-void show_map(Map map, Difficulty difficulty){
+void show_map(Map &map, Difficulty difficulty){
   
   Point mapDimensions;
   
@@ -23,4 +23,16 @@ void show_map(Map map, Difficulty difficulty){
     mapDimensions.y = 30;
   }
   
+}
+
+void end_game(bool hasFailed){
+  if (hasFailed){
+    std::cout << "RUIM" << std::endl;
+    return;
+  }
+
+  std::cout << "CONGRATS" << std::endl;
+  std::cout << "ENTER YOUR NAME" << std::endl;
+  //(adicionando nome do jogador ao arquivo de ranking)
+  std::cout << "SUCCESSFULLY RECORDED" << std::endl;
 }
