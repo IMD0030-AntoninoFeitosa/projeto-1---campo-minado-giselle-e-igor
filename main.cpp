@@ -19,12 +19,20 @@ void show_usage(void){
   std::cout << "                               -a or --advanced" << std::endl;
 }
 
+void show_leaderboard(){
+  std::cout << "LEADERBOARD --- BEGINNER" << std::endl;
+  for (int i = 0; i < 20; i++){
+    std::cout << i+1 << " --- FULANINHOOSSSSS" << std::endl;
+  }
+}
 
 void start_game(Difficulty level){
   unsigned long seed = 0;
   std::srand(seed);
   Map map;
+  //MOSTRAR INSTRUÇÕES AO JOGADOR
   show_map(map, level);
+  //APÓS O PRIMEIRO IMPUT DO JOGADOR O MAPA É GERADO
 }
 
 void store_difficulty(const std::string config_file, Difficulty level){
@@ -72,45 +80,49 @@ Difficulty load_difficulty(const std::string config_file){
 
 
 int main(int argc, char** argv){
-    if (argc > 1){
-      std::string arg = argv[1];
-      if (arg == "-h" || arg == "-help"){
-          show_usage();
-      }
+  if (argc > 1){
+    std::string arg = argv[1];
+    if (arg == "-h" || arg == "-help"){
+      show_usage();
+    }
 
-      else if (arg == "-d" || arg == "--difficulty"){
-        if (argc > 2){
+    else if (arg == "-r" || arg == "--records"){
+      show_leaderboard();
+    }
 
-          //PARA FAZER COMPARAÇÕES É NECESSÁRIO CRIAR UMA STRING COM O VALOR DE ARGV[i]
-          std::string newlevel = argv[2];
-          
-          if(newlevel == "-b" || newlevel == "--beginner"){
-            store_difficulty(CONFIG_FILE, Difficulty::beginner);
-          }
-          else if(newlevel == "-i" || newlevel == "--intermediary"){
-            store_difficulty(CONFIG_FILE, Difficulty::intermediary);
-          }
-          else if(newlevel == "-a" || newlevel == "--advanced"){
-            store_difficulty(CONFIG_FILE, Difficulty::advanced);
-          }
-          else {
-            std::cout << "Unknown difficulty argument: " << newlevel << std::endl;
-            show_usage();
-          }
+    else if (arg == "-d" || arg == "--difficulty"){
+      if (argc > 2){
+
+        //PARA FAZER COMPARAÇÕES É NECESSÁRIO CRIAR UMA STRING COM O VALOR DE ARGV[i]
+        std::string newlevel = argv[2];
+        
+        if(newlevel == "-b" || newlevel == "--beginner"){
+          store_difficulty(CONFIG_FILE, Difficulty::beginner);
+        }
+        else if(newlevel == "-i" || newlevel == "--intermediary"){
+          store_difficulty(CONFIG_FILE, Difficulty::intermediary);
+        }
+        else if(newlevel == "-a" || newlevel == "--advanced"){
+          store_difficulty(CONFIG_FILE, Difficulty::advanced);
         }
         else {
-          std::cout << "It was expected a difficulty for: " << argv[1] << std::endl;
+          std::cout << "Unknown difficulty argument: " << newlevel << std::endl;
           show_usage();
         }
       }
       else {
-        std::cout << "Unknown argument: " << argv[1] << std::endl;
+        std::cout << "It was expected a difficulty for: " << argv[1] << std::endl;
         show_usage();
       }
     }
     else {
-      Difficulty level = load_difficulty(CONFIG_FILE);
-      start_game(level);
+      std::cout << "Unknown argument: " << argv[1] << std::endl;
+      show_usage();
     }
-    return 0;
+  }
+  else {
+    Difficulty level = load_difficulty(CONFIG_FILE);
+    start_game(level);
+  }
+  return 0;
 }
