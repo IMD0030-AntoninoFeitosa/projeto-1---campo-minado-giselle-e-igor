@@ -5,10 +5,9 @@
 #include <fstream>
 #include <cstdlib>
 
-//#include "Game.h"
+#include "Game.h"
 
 const std::string CONFIG_FILE = "config.cfg";
-
 
 void show_usage(void){
   std::cout << "Usage: game [option]" << std::endl;
