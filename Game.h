@@ -25,7 +25,7 @@ void show_map(Map & map, Difficulty difficulty);
 void generate_map(Map & map, int n_bombs);
 
 //CHAMADA QND O JOGO ACABA (VITÓRIA OU DERROTA)
-void end_game();
+void end_game(bool hasFailed);
 
 //(AINDA PENSANDO EM COMO ESSA VAI FUNCIONAR/SE É NECESSÁRIA)
 void action(Map & map, int px, int py);
