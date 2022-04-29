@@ -12,18 +12,22 @@ struct Cell {
   short qnt_bombs;
 };
 
+struct Point{
+  int x,y;
+};
+
 using Map = std::vector<std::vector<Cell>>;
 
-//show map
-void show_map(Map & map);
+//MOSTRA O MAPA AO JOGADOR (VERIFICA O ESTADO DAS CÉLULAS)
+void show_map(Map & map, Difficulty difficulty);
 
-//generate map
+//GERA O MAPA, É CHAMADA APENAS APÓS O PRIMEIRO INPUT DO JOGADOR
 void generate_map(Map & map, int n_bombs);
 
-//game over
+//CHAMADA QND O JOGO ACABA (VITÓRIA OU DERROTA)
 void end_game();
 
-//action
+//(AINDA PENSANDO EM COMO ESSA VAI FUNCIONAR/SE É NECESSÁRIA)
 void action(Map & map, int px, int py);
 
 #endif
