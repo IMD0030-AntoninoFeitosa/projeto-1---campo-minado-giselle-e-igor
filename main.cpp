@@ -29,9 +29,12 @@ void show_leaderboard(){
 void start_game(Difficulty level){
   unsigned long seed = 0;
   std::srand(seed);
-  Map map;
+  
+  Game game = create_game(level);
   //MOSTRAR INSTRUÇÕES AO JOGADOR
-  show_map(map, level);
+  Map map = create_map(game);
+  
+  show_map(game, map);
   //APÓS O PRIMEIRO IMPUT DO JOGADOR O MAPA É GERADO
 }
 
