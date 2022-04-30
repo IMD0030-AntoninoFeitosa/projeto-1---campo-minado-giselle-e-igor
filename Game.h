@@ -9,7 +9,7 @@ struct Cell {
   bool is_hidden {true};
   bool has_bomb {false};
   bool has_flag {false};
-  short qnt_bombs = 0;
+  short qnt_bombs;
 };
 
 using Map = std::vector<std::vector<Cell>>;
