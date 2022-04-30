@@ -9,20 +9,28 @@ struct Cell {
   bool is_hidden {true};
   bool has_bomb {false};
   bool has_flag {false};
-  short qnt_bombs;
-};
-
-struct Point{
-  int x,y;
+  short qnt_bombs = 0;
 };
 
 using Map = std::vector<std::vector<Cell>>;
 
+struct Point{
+  short x,y;
+};
+
+struct Game{
+  short total_bombs;
+  Point mapDimensions;
+};
+
 //MOSTRA O MAPA AO JOGADOR (VERIFICA O ESTADO DAS CÉLULAS)
-void show_map(Map & map, Difficulty difficulty);
+void show_map(Game game,  Map map);
+
+//Armazena os dados do jogo de acordo com a dificuldade selecionada.
+Game create_game(Difficulty difficulty);
 
 //GERA O MAPA, É CHAMADA APENAS APÓS O PRIMEIRO INPUT DO JOGADOR
-void generate_map(Map & map, int n_bombs);
+Map create_map(Game game);
 
 //CHAMADA QND O JOGO ACABA (VITÓRIA OU DERROTA)
 void end_game(bool hasFailed);
