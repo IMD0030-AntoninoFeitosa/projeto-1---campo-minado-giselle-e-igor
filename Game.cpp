@@ -45,6 +45,19 @@ Map create_map(Game game){
     map.push_back(cellList);
   }
 
+  //Placing mines according to the difficulty of the game
+  for (int i = 0; i < game.total_bombs;){
+    int random = rand() % (game.mapDimensions.x * game.mapDimensions.y);
+    int x = random / game.mapDimensions.x;
+    int y = random % game.mapDimensions.y;
+
+    // Add the mine if no mine is placed at this pos
+    if (map[x][y].has_bomb == false){
+        map[x][y].has_bomb = true;
+        i++;
+    }
+  }
+  
   return map;
 }
 
@@ -55,15 +68,21 @@ void show_map(Game game, Map map){
         std::cout << "º";
       }
       else {
-        std::cout << "X";
+        if(map[i][j].has_bomb == true){
+          std::cout << "X";
+        }
+        else if(map[i][j].has_flag == true){
+          std::cout << "F";
+        }
+        else{
+          std::cout << map[i][j].qnt_bombs;
+        }
       }
       std::cout << "  ";
     }
     std::cout << std::endl;
   }
 }
-
-
 
 void end_game(bool hasFailed){
   if (hasFailed){
