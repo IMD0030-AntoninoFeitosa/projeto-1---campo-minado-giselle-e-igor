@@ -38,4 +38,13 @@ void end_game(bool hasFailed);
 //(AINDA PENSANDO EM COMO ESSA VAI FUNCIONAR/SE É NECESSÁRIA)
 void action(Map & map, int px, int py);
 
+//Checa se uma posição é válida
+bool is_valid(Game game, Map & map, int x, int y);
+
+// Conta o numero de mines adjacentes
+int count_bombs(Game game, Map & map, int x, int y);
+
+// Limpa as celulas em volta de uma celula com 0
+void clear_neighbor(Game game, Map & map, int x, int y);
+
 #endif

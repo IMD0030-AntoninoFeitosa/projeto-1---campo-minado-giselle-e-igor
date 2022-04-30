@@ -57,15 +57,23 @@ Map create_map(Game game){
         i++;
     }
   }
+
+  // Count adjacent mines
+  for (int i = 0; i < game.mapDimensions.x; i++){
+    for (int j = 0; j < game.mapDimensions.y; j++){
+      map[i][j].qnt_bombs = count_bombs(game, map, i, j);
+    }
+  }
   
   return map;
 }
 
 void show_map(Game game, Map map){
   for (int i = 0; i < game.mapDimensions.x; i++){
+    std::cout << i << " ";
     for (int j = 0; j < game.mapDimensions.y; j++){
       if (map[i][j].is_hidden == true){
-        std::cout << "º";
+        std::cout << "-";
       }
       else {
         if(map[i][j].has_bomb == true){
@@ -94,4 +102,92 @@ void end_game(bool hasFailed){
   std::cout << "ENTER YOUR NAME" << std::endl;
   //(adicionando nome do jogador ao arquivo de ranking)
   std::cout << "SUCCESSFULLY RECORDED" << std::endl;
+}
+
+bool is_valid(Game game, int row, int col)
+{
+    return (row >= 0) && (row < game.mapDimensions.x) &&
+           (col >= 0) && (col < game.mapDimensions.y);
+}
+
+int count_bombs(Game game, Map & map, int x, int y) {
+  int count = 0;
+  if (is_valid(game, x - 1, y - 1)) {
+    if (map[x-1][y-1].has_bomb){
+      count++;
+    }
+  }
+  if (is_valid(game, x - 1, y)) {
+    if (map[x-1][y].has_bomb){
+      count++;
+    }
+  }
+  if (is_valid(game, x - 1, y + 1)) {
+    if (map[x-1][y+1].has_bomb){
+      count++;
+    }
+  }
+  if (is_valid(game, x, y - 1)) {
+    if (map[x][y-1].has_bomb){
+      count++;
+    }
+  }
+  if (is_valid(game, x, y + 1)) {
+    if (map[x][y+1].has_bomb){
+      count++;
+    }
+  }
+  if (is_valid(game, x + 1, y - 1)) {
+    if (map[x+1][y-1].has_bomb){
+      count++;
+    }
+  }
+  if (is_valid(game, x + 1, y)) {
+    if (map[x+1][y].has_bomb){
+      count++;
+    }
+  }
+  if (is_valid(game, x + 1, y + 1)) {
+    if (map[x+1][y+1].has_bomb){
+      count++;
+    }
+  }
+  return count;
+}
+
+void clear_neighbor(Game game, Map & map, int x, int y) {
+  if (map[x][y].qnt_bombs == 0) {
+    if (is_valid(game, x - 1, y - 1) && map[x-1][y-1].is_hidden) {
+      map[x-1][y-1].is_hidden = false;
+      clear_neighbor(game, map, x - 1, y - 1);
+    }
+    if (is_valid(game, x - 1, y) && map[x-1][y].is_hidden) {
+      map[x-1][y].is_hidden = false;
+      clear_neighbor(game, map, x - 1, y);
+    }
+    if (is_valid(game, x - 1, y + 1) && map[x-1][y+1].is_hidden) {
+      map[x-1][y+1].is_hidden = false;
+      clear_neighbor(game, map, x - 1, y + 1);
+    }
+    if (is_valid(game, x, y - 1) && map[x][y-1].is_hidden) {
+      map[x][y-1].is_hidden = false;
+      clear_neighbor(game, map, x, y - 1);
+    }
+    if (is_valid(game, x, y + 1) && map[x][y+1].is_hidden) {
+      map[x][y+1].is_hidden = false;
+      clear_neighbor(game, map, x, y + 1);
+    }
+    if (is_valid(game, x + 1, y - 1) && map[x+1][y-1].is_hidden) {
+      map[x+1][y-1].is_hidden = false;
+      clear_neighbor(game, map, x + 1, y - 1);
+    }
+    if (is_valid(game, x + 1, y) && map[x+1][y].is_hidden) {
+      map[x+1][y].is_hidden = false;
+      clear_neighbor(game, map, x + 1, y);
+    }
+    if (is_valid(game, x + 1, y + 1) && map[x+1][y+1].is_hidden) {
+      map[x+1][y+1].is_hidden = false;
+      clear_neighbor(game, map, x + 1, y + 1);
+    }
+  }
 }

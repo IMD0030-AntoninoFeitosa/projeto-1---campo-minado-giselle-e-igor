@@ -36,10 +36,11 @@ void start_game(Difficulty level){
   
   show_map(game, map);
 
-  for (int i = 0; i < 10; i++){
+  for (int i = 0; i < 20; i++){
     short x,y;
     std::cin >> x >> y;
     map[x][y].is_hidden = false;
+    clear_neighbor(game, map, x, y);
     show_map(game, map);
     if (map[x][y].has_bomb == true){
       end_game(true);
