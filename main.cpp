@@ -35,7 +35,20 @@ void start_game(Difficulty level){
   Map map = create_map(game);
   
   show_map(game, map);
-  //APÓS O PRIMEIRO IMPUT DO JOGADOR O MAPA É GERADO
+
+  for (int i = 0; i < 10; i++){
+    short x,y;
+    std::cin >> x >> y;
+    map[x][y].is_hidden = false;
+    show_map(game, map);
+    if (map[x][y].has_bomb == true){
+      end_game(true);
+      break;
+    }
+  }
+
+  
+  
 }
 
 void store_difficulty(const std::string config_file, Difficulty level){
