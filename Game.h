@@ -2,6 +2,11 @@
 #define GAME_H
 
 #include <vector>
+#include <string>
+
+const std::string BEGINNER_RANKING_FILE = "b_ranking.txt";
+const std::string INTERMEDIARY_RANKING_FILE = "i_ranking.txt";
+const std::string ADVANCED_RANKING_FILE = "a_ranking.txt";
 
 enum class Difficulty { beginner, intermediary, advanced };
 
@@ -33,7 +38,7 @@ Game create_game(Difficulty difficulty);
 Map create_map(Game game);
 
 //CHAMADA QND O JOGO ACABA (VITÓRIA OU DERROTA)
-void end_game(bool hasFailed);
+void end_game(bool hasFailed, int seconds);
 
 //(AINDA PENSANDO EM COMO ESSA VAI FUNCIONAR/SE É NECESSÁRIA)
 void action(Map & map, int px, int py);
