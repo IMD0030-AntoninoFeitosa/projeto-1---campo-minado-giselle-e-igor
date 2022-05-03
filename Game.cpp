@@ -3,9 +3,9 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <fstream>
 
 #include "Game.h"
-
 
 Game create_game(Difficulty difficulty){
   Game gameSetup;
@@ -23,8 +23,8 @@ Game create_game(Difficulty difficulty){
     gameSetup.total_bombs = 40;
   }
   else if (difficulty == Difficulty::advanced){
-    mapDimensions.x = 15;
-    mapDimensions.y = 30;
+    mapDimensions.x = 30;
+    mapDimensions.y = 15;
     gameSetup.total_bombs = 100;
   }
 
@@ -37,14 +37,16 @@ Game create_game(Difficulty difficulty){
 Map create_map(Game game){
   Map map;
   Cell genericCell;
-  for (int i = 0; i < game.mapDimensions.x; i++){
+  
+  for (int i = 0; i < game.mapDimensions.y; i++){
     std::vector<Cell> cellList;
-    for (int j = 0; j < game.mapDimensions.y; j++){
+    for (int j = 0; j < game.mapDimensions.x; j++){
       cellList.push_back(genericCell);
     }
     map.push_back(cellList);
   }
 
+  
   //Placing mines according to the difficulty of the game
   for (int i = 0; i < game.total_bombs;){
     int random = rand() % (game.mapDimensions.x * game.mapDimensions.y);
@@ -59,8 +61,8 @@ Map create_map(Game game){
   }
 
   // Count adjacent mines
-  for (int i = 0; i < game.mapDimensions.x; i++){
-    for (int j = 0; j < game.mapDimensions.y; j++){
+  for (int i = 0; i < game.mapDimensions.y; i++){
+    for (int j = 0; j < game.mapDimensions.x; j++){
       map[i][j].qnt_bombs = count_bombs(game, map, i, j);
     }
   }
@@ -69,9 +71,11 @@ Map create_map(Game game){
 }
 
 void show_map(Game game, Map map){
-  for (int i = 0; i < game.mapDimensions.x; i++){
+  std::cout << std::endl;
+  
+  for (int i = 0; i < game.mapDimensions.y; i++){
     std::cout << i << " ";
-    for (int j = 0; j < game.mapDimensions.y; j++){
+    for (int j = 0; j < game.mapDimensions.x; j++){
       if (map[i][j].is_hidden == true){
         std::cout << "-";
       }
@@ -90,25 +94,39 @@ void show_map(Game game, Map map){
     }
     std::cout << std::endl;
   }
+  std::cout << std::endl;
 }
 
-void end_game(bool hasFailed){
+void end_game(bool hasFailed, int seconds){
+  std::string name;
+  
   if (hasFailed){
-    std::cout << "RUIM" << std::endl;
+    std::cout << "Game Over!! Better luck next time~" << std::endl;
     return;
   }
-
-  std::cout << "CONGRATS" << std::endl;
-  std::cout << "ENTER YOUR NAME" << std::endl;
-  //(adicionando nome do jogador ao arquivo de ranking)
-  std::cout << "SUCCESSFULLY RECORDED" << std::endl;
+  
+  std::fstream file;
+  file.open(BEGINNER_RANKING_FILE, std::fstream::app);
+  
+  std::cout << "Congratulations! You finished the level in " << seconds << "seconds!!"<< std::endl;
+  std::cout << "Please enter your name:" << std::endl;
+  std::cin >> name;
+  if (file.is_open()){
+    file << name << ": " << seconds << " seconds.\n";
+    std::cout << "Data sucessfully recorded!" << std::endl;
+    file.close();
+  }
+  else{
+    std::cout << "ERROR: Failed to register data." << std::endl;
+  }
 }
 
 bool is_valid(Game game, int row, int col)
 {
-    return (row >= 0) && (row < game.mapDimensions.x) &&
-           (col >= 0) && (col < game.mapDimensions.y);
+    return (row >= 0) && (row < game.mapDimensions.y) &&
+           (col >= 0) && (col < game.mapDimensions.x);
 }
+
 
 int count_bombs(Game game, Map & map, int x, int y) {
   int count = 0;
