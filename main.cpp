@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
+#include <chrono>
 
 #include "Game.h"
 
@@ -19,14 +20,17 @@ void show_usage(void){
   std::cout << "                               -a or --advanced" << std::endl;
 }
 
-void show_leaderboard(){
-  std::cout << "LEADERBOARD --- BEGINNER" << std::endl;
-  for (int i = 0; i < 20; i++){
-    std::cout << i+1 << " --- FULANINHOOSSSSS" << std::endl;
+bool check_victory(Game game, Map map){
+  for (int i = 0; i < game.mapDimensions.x; i++){
+    for (int j = 0; j < game.mapDimensions.y; j++){
+      if (map[i][j].is_hidden && !map[i][j].has_bomb)
+        return false;
+    }
   }
+  return true;
 }
 
-void start_game(Difficulty level){
+bool start_game(Difficulty level){
   unsigned long seed = 0;
   std::srand(seed);
   
@@ -36,20 +40,23 @@ void start_game(Difficulty level){
   
   show_map(game, map);
 
-  for (int i = 0; i < 20; i++){
+  while (1){
     short x,y;
-    std::cin >> x >> y;
+    std::cin >> y >> x;
     map[x][y].is_hidden = false;
     clear_neighbor(game, map, x, y);
     show_map(game, map);
     if (map[x][y].has_bomb == true){
-      end_game(true);
-      break;
+      //end_game(true);
+      return true;
+      //break;
+    }
+    if (check_victory(game, map)){
+      //end_game(false);
+      return false;
+      //break;
     }
   }
-
-  
-  
 }
 
 void store_difficulty(const std::string config_file, Difficulty level){
@@ -95,6 +102,43 @@ Difficulty load_difficulty(const std::string config_file){
   return level;
 }
 
+void show_leaderboard(){
+
+  Difficulty level = load_difficulty(CONFIG_FILE);
+  std::string levelText;
+  std::string line;
+  std::ifstream file;
+  
+  switch(level){
+      case Difficulty::beginner:
+        levelText = "BEGINNER";
+        file.open (BEGINNER_RANKING_FILE.c_str(), std::ifstream::in);
+        break;
+    
+      case Difficulty::intermediary:
+        levelText = "INTERMEDIARY";
+        file.open (INTERMEDIARY_RANKING_FILE.c_str(), std::ifstream::in);
+        break;
+    
+      case Difficulty::advanced:
+        levelText = "ADVANCED";
+        file.open (ADVANCED_RANKING_FILE.c_str(), std::ifstream::in);
+        break;
+    }
+  
+  std::cout << "LEADERBOARD - - - - - - - - - - - - " << levelText << std::endl;
+
+  if (file.is_open()){
+    while ( getline (file,line) )
+    {
+      std::cout << line << '\n';
+    }
+    file.close();
+  }
+  else{
+    std::cout << "ERROR: no records were found for the " << levelText << " difficulty, please check again later." << std::endl;
+  }
+}
 
 int main(int argc, char** argv){
   if (argc > 1){
@@ -139,7 +183,13 @@ int main(int argc, char** argv){
   }
   else {
     Difficulty level = load_difficulty(CONFIG_FILE);
-    start_game(level);
+    auto begin = std::chrono::high_resolution_clock::now();
+    
+    bool gameResults = start_game(level);
+    
+    auto result = std::chrono::high_resolution_clock::now() - begin;
+    int seconds = std::chrono::duration_cast<std::chrono::seconds>(result).count();
+    end_game(gameResults, seconds);
   }
   return 0;
 }
