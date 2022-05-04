@@ -21,8 +21,8 @@ void show_usage(void){
 }
 
 bool check_victory(Game game, Map map){
-  for (int i = 0; i < game.mapDimensions.x; i++){
-    for (int j = 0; j < game.mapDimensions.y; j++){
+  for (int i = 0; i < game.mapDimensions.y; i++){
+    for (int j = 0; j < game.mapDimensions.x; j++){
       if (map[i][j].is_hidden && !map[i][j].has_bomb)
         return false;
     }
@@ -31,8 +31,8 @@ bool check_victory(Game game, Map map){
 }
 
 bool start_game(Difficulty level){
-  unsigned long seed = 0;
-  std::srand(seed);
+  // unsigned long seed = 0;
+  // std::srand(seed);
   
   Game game = create_game(level);
   //MOSTRAR INSTRUÇÕES AO JOGADOR
@@ -40,22 +40,50 @@ bool start_game(Difficulty level){
   
   show_map(game, map);
 
+  // Check if the first cell is empty in intermediary
+  if (level == Difficulty::intermediary) {
+    short x,y;
+    std::cin >> y >> x;
+    while (map[x][y].has_bomb || map[x][y].qnt_bombs != 0) {
+      map = create_map(game);
+    }
+    map[x][y].is_hidden = false;
+    clear_neighbor(game, map, x, y);
+    show_map(game, map);
+  }
+
+  // Check if the cell has a number in advanced
+  if (level == Difficulty::advanced) {
+    short x,y;
+    std::cin >> y >> x;
+    while (map[x][y].has_bomb || map[x][y].qnt_bombs < 1) {
+      map = create_map(game);
+    }
+    map[x][y].is_hidden = false;
+    show_map(game, map);
+  }
+
   while (1){
     short x,y;
     std::cin >> y >> x;
     map[x][y].is_hidden = false;
-    clear_neighbor(game, map, x, y);
-    show_map(game, map);
     if (map[x][y].has_bomb == true){
       //end_game(true);
+      show_bombs(game, map);
+      show_map(game, map);
       return true;
       //break;
     }
+    else {
+      clear_neighbor(game, map, x, y);
+    }
     if (check_victory(game, map)){
       //end_game(false);
+      show_map(game, map);
       return false;
       //break;
     }
+    show_map(game, map);
   }
 }
 

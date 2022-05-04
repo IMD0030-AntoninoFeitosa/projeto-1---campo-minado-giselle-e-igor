@@ -43,6 +43,8 @@ void end_game(bool hasFailed, int seconds);
 //(AINDA PENSANDO EM COMO ESSA VAI FUNCIONAR/SE É NECESSÁRIA)
 void action(Map & map, int px, int py);
 
+void show_bombs(Game game, Map & map);
+
 //Checa se uma posição é válida
 bool is_valid(Game game, Map & map, int x, int y);
 

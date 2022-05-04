@@ -4,6 +4,8 @@
 #include <utility>
 #include <vector>
 #include <fstream>
+#include <time.h> 
+#include <iomanip>
 
 #include "Game.h"
 
@@ -37,6 +39,8 @@ Game create_game(Difficulty difficulty){
 Map create_map(Game game){
   Map map;
   Cell genericCell;
+
+  std::srand(time(NULL));
   
   for (int i = 0; i < game.mapDimensions.y; i++){
     std::vector<Cell> cellList;
@@ -51,7 +55,7 @@ Map create_map(Game game){
   for (int i = 0; i < game.total_bombs;){
     int random = rand() % (game.mapDimensions.x * game.mapDimensions.y);
     int x = random / game.mapDimensions.x;
-    int y = random % game.mapDimensions.y;
+    int y = random % game.mapDimensions.x;
 
     // Add the mine if no mine is placed at this pos
     if (map[x][y].has_bomb == false){
@@ -74,7 +78,7 @@ void show_map(Game game, Map map){
   std::cout << std::endl;
   
   for (int i = 0; i < game.mapDimensions.y; i++){
-    std::cout << i << " ";
+    std::cout << std::setfill('0') << std::setw(2) << i << "   ";
     for (int j = 0; j < game.mapDimensions.x; j++){
       if (map[i][j].is_hidden == true){
         std::cout << "-";
@@ -93,6 +97,15 @@ void show_map(Game game, Map map){
       std::cout << "  ";
     }
     std::cout << std::endl;
+  }
+
+  std::cout << std::endl << "    ";
+  for (int i = 0; i < game.mapDimensions.x; i++){
+    std::cout << std::setfill('0') << std::setw(2) << i << " ";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i <= game.mapDimensions.x; i++){
+    std::cout << "---";
   }
   std::cout << std::endl;
 }
@@ -118,6 +131,15 @@ void end_game(bool hasFailed, int seconds){
   }
   else{
     std::cout << "ERROR: Failed to register data." << std::endl;
+  }
+}
+
+void show_bombs(Game game, Map & map) {
+  for (int i = 0; i < game.mapDimensions.y; i++){
+    for (int j = 0; j < game.mapDimensions.x; j++){
+      if (map[i][j].has_bomb)
+        map[i][j].is_hidden = false;
+    }
   }
 }
 
