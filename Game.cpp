@@ -6,8 +6,31 @@
 #include <fstream>
 #include <time.h> 
 #include <iomanip>
+#include <sstream>
 
 #include "Game.h"
+
+
+bool player_input(short &x, short &y){
+  std::string c;
+  
+  std::cin>>c;
+  
+  int num;
+  std::istringstream(c) >> num;
+  
+  if (c.compare("f") == 0 && num == 0){
+    std::cin >> y >> x;
+    return true;
+  }
+
+  else if (num >= 0 && num <= 29){
+    y = num;
+    std::cin >> x;
+  }
+  
+  return false;
+}
 
 Game create_game(Difficulty difficulty){
   Game gameSetup;
@@ -34,6 +57,7 @@ Game create_game(Difficulty difficulty){
 
   return gameSetup;
 }
+
 
 
 Map create_map(Game game){
@@ -74,6 +98,7 @@ Map create_map(Game game){
   return map;
 }
 
+
 void show_map(Game game, Map map){
   std::cout << std::endl;
   
@@ -84,11 +109,11 @@ void show_map(Game game, Map map){
         std::cout << "-";
       }
       else {
-        if(map[i][j].has_bomb == true){
-          std::cout << "X";
-        }
-        else if(map[i][j].has_flag == true){
+        if(map[i][j].has_flag == true){
           std::cout << "F";
+        }
+        else if(map[i][j].has_bomb == true){
+          std::cout << "X";
         }
         else{
           std::cout << map[i][j].qnt_bombs;
@@ -121,11 +146,11 @@ void end_game(bool hasFailed, int seconds){
   std::fstream file;
   file.open(BEGINNER_RANKING_FILE, std::fstream::app);
   
-  std::cout << "Congratulations! You finished the level in " << seconds << "seconds!!"<< std::endl;
+  std::cout << "Congratulations! You finished the level in " << seconds << " seconds!!"<< std::endl;
   std::cout << "Please enter your name:" << std::endl;
   std::cin >> name;
   if (file.is_open()){
-    file << name << ": " << seconds << " seconds.\n";
+    file << name << ";" << seconds << "\n";
     std::cout << "Data sucessfully recorded!" << std::endl;
     file.close();
   }
@@ -133,6 +158,7 @@ void end_game(bool hasFailed, int seconds){
     std::cout << "ERROR: Failed to register data." << std::endl;
   }
 }
+
 
 void show_bombs(Game game, Map & map) {
   for (int i = 0; i < game.mapDimensions.y; i++){
@@ -149,6 +175,51 @@ bool is_valid(Game game, int row, int col)
            (col >= 0) && (col < game.mapDimensions.x);
 }
 
+
+int count_flags(Game game, Map & map, int x, int y) {
+  int count = 0;
+  if (is_valid(game, x - 1, y - 1)) {
+    if (map[x-1][y-1].has_flag){
+      count++;
+    }
+  }
+  if (is_valid(game, x - 1, y)) {
+    if (map[x-1][y].has_flag){
+      count++;
+    }
+  }
+  if (is_valid(game, x - 1, y + 1)) {
+    if (map[x-1][y+1].has_flag){
+      count++;
+    }
+  }
+  if (is_valid(game, x, y - 1)) {
+    if (map[x][y-1].has_flag){
+      count++;
+    }
+  }
+  if (is_valid(game, x, y + 1)) {
+    if (map[x][y+1].has_flag){
+      count++;
+    }
+  }
+  if (is_valid(game, x + 1, y - 1)) {
+    if (map[x+1][y-1].has_flag){
+      count++;
+    }
+  }
+  if (is_valid(game, x + 1, y)) {
+    if (map[x+1][y].has_flag){
+      count++;
+    }
+  }
+  if (is_valid(game, x + 1, y + 1)) {
+    if (map[x+1][y+1].has_flag){
+      count++;
+    }
+  }
+  return count;
+}
 
 int count_bombs(Game game, Map & map, int x, int y) {
   int count = 0;
@@ -194,6 +265,51 @@ int count_bombs(Game game, Map & map, int x, int y) {
   }
   return count;
 }
+
+void reveal_around(Game game, Map &map, int x,int y){
+  int count = 0;
+  if (is_valid(game, x - 1, y - 1)) {
+    if (!map[x-1][y-1].has_flag && !map[x-1][y-1].has_bomb){
+      map[x-1][y-1].is_hidden = false;
+    }
+  }
+  if (is_valid(game, x - 1, y)) {
+    if (!map[x-1][y].has_flag && !map[x-1][y].has_bomb){
+      map[x-1][y].is_hidden = false;
+    }
+  }
+  if (is_valid(game, x - 1, y + 1)) {
+    if (!map[x-1][y+1].has_flag && !map[x-1][y+1].has_bomb){
+      map[x-1][y+1].is_hidden = false;
+    }
+  }
+  if (is_valid(game, x, y - 1)) {
+    if (!map[x][y-1].has_flag && !map[x][y-1].has_bomb){
+      map[x][y-1].is_hidden = false;
+    }
+  }
+  if (is_valid(game, x, y + 1)) {
+    if (!map[x][y+1].has_flag && !map[x][y+1].has_bomb){
+      map[x][y+1].is_hidden = false;
+    }
+  }
+  if (is_valid(game, x + 1, y - 1)) {
+    if (!map[x+1][y-1].has_flag && !map[x+1][y-1].has_bomb){
+      map[x+1][y-1].is_hidden = false;
+    }
+  }
+  if (is_valid(game, x + 1, y)) {
+    if (!map[x+1][y].has_flag && !map[x+1][y].has_bomb){
+      map[x+1][y].is_hidden = false;
+    }
+  }
+  if (is_valid(game, x + 1, y + 1)) {
+    if (!map[x+1][y+1].has_flag && !map[x+1][y+1].has_bomb){
+      map[x+1][y+1].is_hidden = false;
+    }
+  }
+}
+
 
 void clear_neighbor(Game game, Map & map, int x, int y) {
   if (map[x][y].qnt_bombs == 0) {
