@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <chrono>
+#include <iomanip>
 
 #include "Game.h"
 
@@ -23,7 +24,9 @@ void show_usage(void){
 bool check_victory(Game game, Map map){
   for (int i = 0; i < game.mapDimensions.y; i++){
     for (int j = 0; j < game.mapDimensions.x; j++){
-      if (map[i][j].is_hidden && !map[i][j].has_bomb)
+      if(map[j][i].has_bomb && map[j][i].has_flag)
+        continue;
+      else if (map[j][i].is_hidden && !map[j][i].has_bomb)
         return false;
     }
   }
@@ -31,19 +34,21 @@ bool check_victory(Game game, Map map){
 }
 
 bool start_game(Difficulty level){
-  // unsigned long seed = 0;
-  // std::srand(seed);
   
   Game game = create_game(level);
-  //MOSTRAR INSTRUÇÕES AO JOGADOR
+  std::cout << "Welcome to minesweeper! Here are some simple instructions to get started:" << std::endl;
+  std::cout << "Type down the x and y coordinates to reveal cells." << std::endl;
+  std::cout << "To put flags on the map, type 'f' before the coordinates." << std::endl;
   Map map = create_map(game);
   
   show_map(game, map);
 
   // Check if the first cell is empty in intermediary
   if (level == Difficulty::intermediary) {
-    short x,y;
-    std::cin >> y >> x;
+    short x, y;
+
+    bool hasFlag = player_input(x,y);
+    
     while (map[x][y].has_bomb || map[x][y].qnt_bombs != 0) {
       map = create_map(game);
     }
@@ -55,7 +60,7 @@ bool start_game(Difficulty level){
   // Check if the cell has a number in advanced
   if (level == Difficulty::advanced) {
     short x,y;
-    std::cin >> y >> x;
+    bool hasFlag = player_input(x,y);
     while (map[x][y].has_bomb || map[x][y].qnt_bombs < 1) {
       map = create_map(game);
     }
@@ -65,27 +70,42 @@ bool start_game(Difficulty level){
 
   while (1){
     short x,y;
-    std::cin >> y >> x;
-    map[x][y].is_hidden = false;
-    if (map[x][y].has_bomb == true){
-      //end_game(true);
-      show_bombs(game, map);
-      show_map(game, map);
-      return true;
-      //break;
+    bool hasFlag = player_input(x,y);
+
+    if(hasFlag && map[x][y].is_hidden){
+      map[x][y].has_flag = true;
+      map[x][y].is_hidden = false;
     }
-    else {
-      clear_neighbor(game, map, x, y);
-    }
-    if (check_victory(game, map)){
-      //end_game(false);
+      
+    else if(hasFlag && map[x][y].has_flag){
+      map[x][y].is_hidden = true;
+      map[x][y].has_flag = false;
       show_map(game, map);
-      return false;
-      //break;
+      continue;
+    }
+
+    else{
+      map[x][y].is_hidden = false;
+      map[x][y].has_flag = false;
+      if (map[x][y].has_bomb){
+        show_bombs(game, map);
+        show_map(game, map);
+        return true;
+      }
+      else {
+        if (map[x][y].qnt_bombs == count_flags(game,map,x,y) && map[x][y].qnt_bombs != 0)
+          reveal_around(game, map, x, y);
+        clear_neighbor(game, map, x, y);
+      }
+      if (check_victory(game, map)){
+        show_map(game, map);
+        return false;
+      }
     }
     show_map(game, map);
   }
 }
+
 
 void store_difficulty(const std::string config_file, Difficulty level){
   std::ofstream file;
@@ -130,6 +150,29 @@ Difficulty load_difficulty(const std::string config_file){
   return level;
 }
 
+
+void split(const std::string &s, char c, std::vector<std::string> &v){
+  std::string::size_type i = 0;
+  std::string::size_type j = s.find(c);
+  while (j != std::string::npos){
+    v.push_back(s.substr(i, j-i));
+    i = ++j;
+    j = s.find(c, j);
+    if (j == std::string::npos)
+      v.push_back(s.substr(i, s.length( )));
+  }
+}
+
+void sort(std::vector<std::vector<std::string>> &v){
+  for (int i = 0; i < v.size()-1; i++){
+    for (int j= 0; j < v.size() - i - 1; j++){
+      if( std::stoi(v[j][1]) > std::stoi(v[j+1][1]) ){
+        std::swap(v[j], v[j+1]);
+      }
+    }
+  }
+}
+
 void show_leaderboard(){
 
   Difficulty level = load_difficulty(CONFIG_FILE);
@@ -156,13 +199,23 @@ void show_leaderboard(){
   
   std::cout << "LEADERBOARD - - - - - - - - - - - - " << levelText << std::endl;
 
+  std::vector<std::vector<std::string>> users;
   if (file.is_open()){
     while ( getline (file,line) )
     {
-      std::cout << line << '\n';
+      std::vector<std::string> userInfo;
+      split(line,';',userInfo);
+      users.push_back(userInfo);
     }
     file.close();
+    users.shrink_to_fit();
+    sort(users);
+    for (int i = 0; i < users.size(); i++){
+      std::cout << std::setfill('0') << std::setw(2) << i+1 << ": ";
+      std::cout << users[i][0] << " - " << users[i][1] << "  seconds."<< std::endl;
+    }
   }
+    
   else{
     std::cout << "ERROR: no records were found for the " << levelText << " difficulty, please check again later." << std::endl;
   }
@@ -181,8 +234,7 @@ int main(int argc, char** argv){
 
     else if (arg == "-d" || arg == "--difficulty"){
       if (argc > 2){
-
-        //PARA FAZER COMPARAÇÕES É NECESSÁRIO CRIAR UMA STRING COM O VALOR DE ARGV[i]
+      //PARA FAZER COMPARAÇÕES É NECESSÁRIO CRIAR UMA STRING COM O VALOR DE ARGV[i]
         std::string newlevel = argv[2];
         
         if(newlevel == "-b" || newlevel == "--beginner"){
