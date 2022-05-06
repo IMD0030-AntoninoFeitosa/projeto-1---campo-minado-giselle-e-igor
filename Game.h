@@ -48,10 +48,17 @@ void show_bombs(Game game, Map & map);
 //Checa se uma posição é válida
 bool is_valid(Game game, Map & map, int x, int y);
 
-// Conta o numero de mines adjacentes
+//Count mines around cell
 int count_bombs(Game game, Map & map, int x, int y);
+
+//Count flags around cell
+int count_flags(Game game, Map & map, int x, int y);
+
+void reveal_around(Game game, Map &map, int x,int y);
 
 // Limpa as celulas em volta de uma celula com 0
 void clear_neighbor(Game game, Map & map, int x, int y);
+
+bool player_input(short &x, short &y);
 
 #endif
