@@ -270,42 +270,42 @@ void reveal_around(Game game, Map &map, int x,int y){
   int count = 0;
   if (is_valid(game, x - 1, y - 1)) {
     if (!map[x-1][y-1].has_flag && !map[x-1][y-1].has_bomb){
-      map[x-1][y-1].is_hidden = false;
+      clear_neighbor(game, map, x - 1, y - 1);
     }
   }
   if (is_valid(game, x - 1, y)) {
     if (!map[x-1][y].has_flag && !map[x-1][y].has_bomb){
-      map[x-1][y].is_hidden = false;
+      clear_neighbor(game, map, x - 1, y);
     }
   }
   if (is_valid(game, x - 1, y + 1)) {
     if (!map[x-1][y+1].has_flag && !map[x-1][y+1].has_bomb){
-      map[x-1][y+1].is_hidden = false;
+      clear_neighbor(game, map, x - 1, y + 1);
     }
   }
   if (is_valid(game, x, y - 1)) {
     if (!map[x][y-1].has_flag && !map[x][y-1].has_bomb){
-      map[x][y-1].is_hidden = false;
+      clear_neighbor(game, map, x, y - 1);
     }
   }
   if (is_valid(game, x, y + 1)) {
     if (!map[x][y+1].has_flag && !map[x][y+1].has_bomb){
-      map[x][y+1].is_hidden = false;
+      clear_neighbor(game, map, x, y + 1);
     }
   }
   if (is_valid(game, x + 1, y - 1)) {
     if (!map[x+1][y-1].has_flag && !map[x+1][y-1].has_bomb){
-      map[x+1][y-1].is_hidden = false;
+      clear_neighbor(game, map, x + 1, y - 1);
     }
   }
   if (is_valid(game, x + 1, y)) {
     if (!map[x+1][y].has_flag && !map[x+1][y].has_bomb){
-      map[x+1][y].is_hidden = false;
+      clear_neighbor(game, map, x + 1, y);
     }
   }
   if (is_valid(game, x + 1, y + 1)) {
     if (!map[x+1][y+1].has_flag && !map[x+1][y+1].has_bomb){
-      map[x+1][y+1].is_hidden = false;
+      clear_neighbor(game, map, x + 1, y + 1);
     }
   }
 }

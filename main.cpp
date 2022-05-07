@@ -84,9 +84,9 @@ bool start_game(Difficulty level){
       continue;
     }
 
-    else{
-      map[x][y].is_hidden = false;
+    else if (map[x][y].is_hidden){
       map[x][y].has_flag = false;
+      map[x][y].is_hidden = false;
       if (map[x][y].has_bomb){
         show_bombs(game, map);
         show_map(game, map);
