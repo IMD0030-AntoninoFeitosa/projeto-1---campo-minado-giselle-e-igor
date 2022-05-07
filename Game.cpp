@@ -10,6 +10,17 @@
 
 #include "Game.h"
 
+bool check_victory(Game game, Map map){
+  for (int i = 0; i < game.mapDimensions.y; i++){
+    for (int j = 0; j < game.mapDimensions.x; j++){
+      if(map[j][i].has_bomb && map[j][i].has_flag)
+        continue;
+      else if (map[j][i].is_hidden && !map[j][i].has_bomb)
+        return false;
+    }
+  }
+  return true;
+}
 
 bool player_input(short &x, short &y){
   std::string c;
@@ -58,8 +69,6 @@ Game create_game(Difficulty difficulty){
   return gameSetup;
 }
 
-
-
 Map create_map(Game game){
   Map map;
   Cell genericCell;
@@ -74,7 +83,6 @@ Map create_map(Game game){
     map.push_back(cellList);
   }
 
-  
   //Placing mines according to the difficulty of the game
   for (int i = 0; i < game.total_bombs;){
     int random = rand() % (game.mapDimensions.x * game.mapDimensions.y);
@@ -270,41 +278,49 @@ void reveal_around(Game game, Map &map, int x,int y){
   int count = 0;
   if (is_valid(game, x - 1, y - 1)) {
     if (!map[x-1][y-1].has_flag && !map[x-1][y-1].has_bomb){
+      map[x-1][y-1].is_hidden = false;
       clear_neighbor(game, map, x - 1, y - 1);
     }
   }
   if (is_valid(game, x - 1, y)) {
     if (!map[x-1][y].has_flag && !map[x-1][y].has_bomb){
+      map[x-1][y].is_hidden = false;
       clear_neighbor(game, map, x - 1, y);
     }
   }
   if (is_valid(game, x - 1, y + 1)) {
     if (!map[x-1][y+1].has_flag && !map[x-1][y+1].has_bomb){
+      map[x-1][y+1].is_hidden = false;
       clear_neighbor(game, map, x - 1, y + 1);
     }
   }
   if (is_valid(game, x, y - 1)) {
     if (!map[x][y-1].has_flag && !map[x][y-1].has_bomb){
+      map[x][y-1].is_hidden = false;
       clear_neighbor(game, map, x, y - 1);
     }
   }
   if (is_valid(game, x, y + 1)) {
     if (!map[x][y+1].has_flag && !map[x][y+1].has_bomb){
+      map[x][y+1].is_hidden = false;
       clear_neighbor(game, map, x, y + 1);
     }
   }
   if (is_valid(game, x + 1, y - 1)) {
     if (!map[x+1][y-1].has_flag && !map[x+1][y-1].has_bomb){
+      map[x+1][y-1].is_hidden = false;
       clear_neighbor(game, map, x + 1, y - 1);
     }
   }
   if (is_valid(game, x + 1, y)) {
     if (!map[x+1][y].has_flag && !map[x+1][y].has_bomb){
+      map[x+1][y].is_hidden = false;
       clear_neighbor(game, map, x + 1, y);
     }
   }
   if (is_valid(game, x + 1, y + 1)) {
     if (!map[x+1][y+1].has_flag && !map[x+1][y+1].has_bomb){
+      map[x+1][y+1].is_hidden = false;
       clear_neighbor(game, map, x + 1, y + 1);
     }
   }
