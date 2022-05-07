@@ -21,18 +21,6 @@ void show_usage(void){
   std::cout << "                               -a or --advanced" << std::endl;
 }
 
-bool check_victory(Game game, Map map){
-  for (int i = 0; i < game.mapDimensions.y; i++){
-    for (int j = 0; j < game.mapDimensions.x; j++){
-      if(map[j][i].has_bomb && map[j][i].has_flag)
-        continue;
-      else if (map[j][i].is_hidden && !map[j][i].has_bomb)
-        return false;
-    }
-  }
-  return true;
-}
-
 bool start_game(Difficulty level){
   
   Game game = create_game(level);
@@ -84,19 +72,19 @@ bool start_game(Difficulty level){
       continue;
     }
 
-    else if (map[x][y].is_hidden){
+    else if (!map[x][y].has_flag){
       map[x][y].has_flag = false;
-      map[x][y].is_hidden = false;
       if (map[x][y].has_bomb){
         show_bombs(game, map);
         show_map(game, map);
         return true;
       }
       else {
-        if (map[x][y].qnt_bombs == count_flags(game,map,x,y) && map[x][y].qnt_bombs != 0)
+        if (map[x][y].qnt_bombs == count_flags(game,map,x,y) && map[x][y].qnt_bombs != 0 && !map[x][y].is_hidden)
           reveal_around(game, map, x, y);
         clear_neighbor(game, map, x, y);
       }
+      map[x][y].is_hidden = false;
       if (check_victory(game, map)){
         show_map(game, map);
         return false;
@@ -105,7 +93,6 @@ bool start_game(Difficulty level){
     show_map(game, map);
   }
 }
-
 
 void store_difficulty(const std::string config_file, Difficulty level){
   std::ofstream file;
@@ -150,7 +137,7 @@ Difficulty load_difficulty(const std::string config_file){
   return level;
 }
 
-
+//Support function for splitting strings
 void split(const std::string &s, char c, std::vector<std::string> &v){
   std::string::size_type i = 0;
   std::string::size_type j = s.find(c);
@@ -163,6 +150,7 @@ void split(const std::string &s, char c, std::vector<std::string> &v){
   }
 }
 
+//Support function for sorting numbers
 void sort(std::vector<std::vector<std::string>> &v){
   for (int i = 0; i < v.size()-1; i++){
     for (int j= 0; j < v.size() - i - 1; j++){
@@ -174,7 +162,6 @@ void sort(std::vector<std::vector<std::string>> &v){
 }
 
 void show_leaderboard(){
-
   Difficulty level = load_difficulty(CONFIG_FILE);
   std::string levelText;
   std::string line;
@@ -234,7 +221,6 @@ int main(int argc, char** argv){
 
     else if (arg == "-d" || arg == "--difficulty"){
       if (argc > 2){
-      //PARA FAZER COMPARAÇÕES É NECESSÁRIO CRIAR UMA STRING COM O VALOR DE ARGV[i]
         std::string newlevel = argv[2];
         
         if(newlevel == "-b" || newlevel == "--beginner"){
