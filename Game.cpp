@@ -274,15 +274,13 @@ int count_bombs(Game game, Map & map, int x, int y) {
   return count;
 }
 
-void reveal_around(Game game, Map &map, int x,int y){
+bool reveal_around(Game game, Map &map, int x,int y){
   int count = 0;
   if (is_valid(game, x - 1, y - 1)) {
     if (!map[x-1][y-1].has_flag){
       map[x-1][y-1].is_hidden = false;
       if (map[x-1][y-1].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return;
+        return game_lost(game, map);
       }
       clear_neighbor(game, map, x - 1, y - 1);
     }
@@ -291,9 +289,7 @@ void reveal_around(Game game, Map &map, int x,int y){
     if (!map[x-1][y].has_flag){
       map[x-1][y].is_hidden = false;
       if (map[x-1][y].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return;
+        return game_lost(game, map);
       }
       clear_neighbor(game, map, x - 1, y);
     }
@@ -302,9 +298,7 @@ void reveal_around(Game game, Map &map, int x,int y){
     if (!map[x-1][y+1].has_flag){
       map[x-1][y+1].is_hidden = false;
       if (map[x-1][y+1].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return;
+        return game_lost(game, map);
       }
       clear_neighbor(game, map, x - 1, y + 1);
     }
@@ -313,9 +307,7 @@ void reveal_around(Game game, Map &map, int x,int y){
     if (!map[x][y-1].has_flag){
       map[x][y-1].is_hidden = false;
       if (map[x][y-1].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return;
+        return game_lost(game, map);
       }
       clear_neighbor(game, map, x, y - 1);
     }
@@ -324,9 +316,7 @@ void reveal_around(Game game, Map &map, int x,int y){
     if (!map[x][y+1].has_flag){
       map[x][y+1].is_hidden = false;
       if (map[x][y+1].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return;
+        return game_lost(game, map);
       }
       clear_neighbor(game, map, x, y + 1);
     }
@@ -335,9 +325,7 @@ void reveal_around(Game game, Map &map, int x,int y){
     if (!map[x+1][y-1].has_flag){
       map[x+1][y-1].is_hidden = false;
       if (map[x+1][y-1].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return;
+        return game_lost(game, map);
       }
       clear_neighbor(game, map, x + 1, y - 1);
     }
@@ -346,9 +334,7 @@ void reveal_around(Game game, Map &map, int x,int y){
     if (!map[x+1][y].has_flag){
       map[x+1][y].is_hidden = false;
       if (map[x+1][y].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return;
+        return game_lost(game, map);
       }
       clear_neighbor(game, map, x + 1, y);
     }
@@ -357,13 +343,12 @@ void reveal_around(Game game, Map &map, int x,int y){
     if (!map[x+1][y+1].has_flag){
       map[x+1][y+1].is_hidden = false;
       if (map[x+1][y+1].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return;
+        return game_lost(game, map);
       }
       clear_neighbor(game, map, x + 1, y + 1);
     }
   }
+  return false;
 }
 
 
@@ -402,4 +387,10 @@ void clear_neighbor(Game game, Map & map, int x, int y) {
       clear_neighbor(game, map, x + 1, y + 1);
     }
   }
+}
+
+bool game_lost(Game game, Map map) {
+  show_bombs(game, map);
+  show_map(game, map);
+  return true;
 }

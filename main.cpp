@@ -75,15 +75,18 @@ bool start_game(Difficulty level){
     else if (!map[x][y].has_flag){
       map[x][y].has_flag = false;
       if (map[x][y].has_bomb){
-        show_bombs(game, map);
-        show_map(game, map);
-        return true;
+        return game_lost(game, map);
       }
       else {
+        bool check;
         if (map[x][y].qnt_bombs == count_flags(game,map,x,y) && map[x][y].qnt_bombs != 0 && !map[x][y].is_hidden)
-          reveal_around(game, map, x, y);
+           check = reveal_around(game, map, x, y);
         clear_neighbor(game, map, x, y);
+        if (check) {
+          return check;
+        }  
       }
+      
       map[x][y].is_hidden = false;
       if (check_victory(game, map)){
         show_map(game, map);

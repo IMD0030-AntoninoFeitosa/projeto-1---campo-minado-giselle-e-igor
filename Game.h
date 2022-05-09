@@ -53,7 +53,7 @@ int count_bombs(Game game, Map & map, int x, int y);
 int count_flags(Game game, Map & map, int x, int y);
 
 //Reveals what's around the selected cell.
-void reveal_around(Game game, Map &map, int x,int y);
+bool reveal_around(Game game, Map &map, int x,int y);
 
 //Clear cells around 0's.
 void clear_neighbor(Game game, Map & map, int x, int y);
@@ -63,5 +63,8 @@ bool player_input(short &x, short &y);
 
 //Checks if the player won the game.
 bool check_victory(Game game, Map map);
+
+//Game ending in case the user clicks on a bomb
+bool game_lost(Game game, Map map);
 
 #endif
