@@ -22,7 +22,7 @@ bool check_victory(Game game, Map map){
   return true;
 }
 
-bool player_input(short &x, short &y){
+bool player_input(short &x, short &y, Game game){
   std::string c;
   
   std::cin>>c;
@@ -30,14 +30,23 @@ bool player_input(short &x, short &y){
   int num;
   std::istringstream(c) >> num;
   
-  if (c.compare("f") == 0 && num == 0){
+  if ((c.compare("f") == 0 || c.compare("F") == 0) && num == 0){
     std::cin >> y >> x;
+    if (x >= game.mapDimensions.y || y >= game.mapDimensions.x){
+      std::cout << "INVALID COORDINATES! Try again:" << std::endl;
+      return player_input(x, y, game);
+    }
     return true;
   }
 
-  else if (num >= 0 && num <= 29){
+  else if (num >= 0){
     y = num;
     std::cin >> x;
+    if (num >= game.mapDimensions.x || x >= game.mapDimensions.y){
+      std::cout << "INVALID COORDINATES! Try again:" << std::endl;
+      return player_input(x, y, game);
+    }
+    
   }
   
   return false;
