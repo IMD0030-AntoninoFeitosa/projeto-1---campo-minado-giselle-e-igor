@@ -35,7 +35,7 @@ bool start_game(Difficulty level){
   if (level == Difficulty::intermediary) {
     short x, y;
 
-    bool hasFlag = player_input(x,y);
+    bool hasFlag = player_input(x,y,game);
     
     while (map[x][y].has_bomb || map[x][y].qnt_bombs != 0) {
       map = create_map(game);
@@ -48,7 +48,7 @@ bool start_game(Difficulty level){
   // Check if the cell has a number in advanced
   if (level == Difficulty::advanced) {
     short x,y;
-    bool hasFlag = player_input(x,y);
+    bool hasFlag = player_input(x,y,game);
     while (map[x][y].has_bomb || map[x][y].qnt_bombs < 1) {
       map = create_map(game);
     }
@@ -58,7 +58,7 @@ bool start_game(Difficulty level){
 
   while (1){
     short x,y;
-    bool hasFlag = player_input(x,y);
+    bool hasFlag = player_input(x,y,game);
 
     if(hasFlag && map[x][y].is_hidden){
       map[x][y].has_flag = true;
