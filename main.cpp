@@ -24,9 +24,10 @@ void show_usage(void){
 bool start_game(Difficulty level){
   
   Game game = create_game(level);
-  std::cout << "Welcome to minesweeper! Here are some simple instructions to get started:" << std::endl;
-  std::cout << "Type down the x and y coordinates to reveal cells." << std::endl;
-  std::cout << "To put flags on the map, type 'f' before the coordinates." << std::endl;
+  std::cout << " > > > > > > > > > MINESWEEPER < < < < < < < < <" << std::endl;
+  std::cout << std::endl;
+  std::cout << "INSTRUCTIONS: Type down the x and y coordinates to reveal hidden cells." << std::endl;
+  std::cout << "              To place flags on the map, type 'f' before the coordinates." << std::endl;
   Map map = create_map(game);
   
   show_map(game, map);
@@ -201,8 +202,8 @@ void show_leaderboard(){
     users.shrink_to_fit();
     sort(users);
     for (int i = 0; i < users.size(); i++){
-      std::cout << std::setfill('0') << std::setw(2) << i+1 << ": ";
-      std::cout << users[i][0] << " - " << users[i][1] << "  seconds."<< std::endl;
+      std::cout << std::setfill('0') << std::setw(2) << std::right << i+1 << ": ";
+      std::cout << std::setfill(' ') << std::setw(20) << std::left << users[i][0] << " - " << std::setw(4) << users[i][1] << "  seconds."<< std::endl;
     }
   }
     
