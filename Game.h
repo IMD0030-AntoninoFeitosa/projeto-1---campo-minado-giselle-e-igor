@@ -59,7 +59,7 @@ bool reveal_around(Game game, Map &map, int x,int y);
 void clear_neighbor(Game game, Map & map, int x, int y);
 
 //Receives player's input
-bool player_input(short &x, short &y, Game game, std::chrono::high_resolution_clock::time_point begin);
+bool player_input(short &x, short &y, Game game);
 
 //Checks if the player won the game.
 bool check_victory(Game game, Map map);

@@ -21,7 +21,7 @@ void show_usage(void){
   std::cout << "                               -a or --advanced" << std::endl;
 }
 
-bool start_game(Difficulty level, std::chrono::high_resolution_clock::time_point begin){
+bool start_game(Difficulty level){
   
   Game game = create_game(level);
   std::cout << " > > > > > > > > > MINESWEEPER < < < < < < < < <" << std::endl;
@@ -36,7 +36,7 @@ bool start_game(Difficulty level, std::chrono::high_resolution_clock::time_point
   if (level == Difficulty::intermediary) {
     short x, y;
 
-    bool hasFlag = player_input(x,y,game, begin);
+    bool hasFlag = player_input(x,y,game);
     
     while (map[x][y].has_bomb || map[x][y].qnt_bombs != 0) {
       map = create_map(game);
@@ -49,7 +49,7 @@ bool start_game(Difficulty level, std::chrono::high_resolution_clock::time_point
   // Check if the cell has a number in advanced
   if (level == Difficulty::advanced) {
     short x,y;
-    bool hasFlag = player_input(x,y,game, begin);
+    bool hasFlag = player_input(x,y,game);
     while (map[x][y].has_bomb || map[x][y].qnt_bombs < 1) {
       map = create_map(game);
     }
@@ -59,7 +59,7 @@ bool start_game(Difficulty level, std::chrono::high_resolution_clock::time_point
 
   while (1){
     short x,y;
-    bool hasFlag = player_input(x,y,game, begin);
+    bool hasFlag = player_input(x,y,game);
 
     if(hasFlag && map[x][y].is_hidden){
       map[x][y].has_flag = true;
@@ -253,9 +253,9 @@ int main(int argc, char** argv){
   }
   else {
     Difficulty level = load_difficulty(CONFIG_FILE);
-    std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolution_clock::now();
+    auto begin = std::chrono::high_resolution_clock::now();
     
-    bool gameResults = start_game(level, begin);
+    bool gameResults = start_game(level);
     
     auto result = std::chrono::high_resolution_clock::now() - begin;
     int seconds = std::chrono::duration_cast<std::chrono::seconds>(result).count();
