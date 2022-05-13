@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <chrono>
 
 const std::string BEGINNER_RANKING_FILE = "b_ranking.txt";
 const std::string INTERMEDIARY_RANKING_FILE = "i_ranking.txt";
@@ -59,7 +60,7 @@ bool reveal_around(Game game, Map &map, int x,int y);
 void clear_neighbor(Game game, Map & map, int x, int y);
 
 //Receives player's input
-bool player_input(short &x, short &y, Game game);
+bool player_input(short &x, short &y, Game game, std::chrono::high_resolution_clock::time_point &time, bool &firstMovement);
 
 //Checks if the player won the game.
 bool check_victory(Game game, Map map);

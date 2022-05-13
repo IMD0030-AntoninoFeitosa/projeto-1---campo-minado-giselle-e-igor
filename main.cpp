@@ -21,12 +21,15 @@ void show_usage(void){
   std::cout << "                               -a or --advanced" << std::endl;
 }
 
-bool start_game(Difficulty level){
+void start_game(Difficulty level){
+  std::chrono::high_resolution_clock::time_point begin;
+  bool firstMovement = true;
+  int time = 0;
   
   Game game = create_game(level);
   std::cout << " > > > > > > > > > MINESWEEPER < < < < < < < < <" << std::endl;
   std::cout << std::endl;
-  std::cout << "INSTRUCTIONS: Type down the x and y coordinates to reveal hidden cells." << std::endl;
+  std::cout << "INSTRUCTIONS: To reveal hidden cells, type 'r' before the coordinates." << std::endl;
   std::cout << "              To place flags on the map, type 'f' before the coordinates." << std::endl;
   Map map = create_map(game);
   
@@ -36,7 +39,7 @@ bool start_game(Difficulty level){
   if (level == Difficulty::intermediary) {
     short x, y;
 
-    bool hasFlag = player_input(x,y,game);
+    bool hasFlag = player_input(x,y,game,begin,firstMovement);
     
     while (map[x][y].has_bomb || map[x][y].qnt_bombs != 0) {
       map = create_map(game);
@@ -49,7 +52,7 @@ bool start_game(Difficulty level){
   // Check if the cell has a number in advanced
   if (level == Difficulty::advanced) {
     short x,y;
-    bool hasFlag = player_input(x,y,game);
+    bool hasFlag = player_input(x,y,game, begin, firstMovement);
     while (map[x][y].has_bomb || map[x][y].qnt_bombs < 1) {
       map = create_map(game);
     }
@@ -59,7 +62,7 @@ bool start_game(Difficulty level){
 
   while (1){
     short x,y;
-    bool hasFlag = player_input(x,y,game);
+    bool hasFlag = player_input(x,y,game, begin,firstMovement);
 
     if(hasFlag && map[x][y].is_hidden){
       map[x][y].has_flag = true;
@@ -76,7 +79,10 @@ bool start_game(Difficulty level){
     else if (!map[x][y].has_flag){
       map[x][y].has_flag = false;
       if (map[x][y].has_bomb){
-        return game_lost(game, map);
+        auto result = std::chrono::high_resolution_clock::now() - begin;
+        int seconds = std::chrono::duration_cast<std::chrono::seconds>(result).count();
+        end_game(game_lost(game, map), seconds);
+        return;
       }
       else {
         bool check;
@@ -84,14 +90,20 @@ bool start_game(Difficulty level){
            check = reveal_around(game, map, x, y);
         clear_neighbor(game, map, x, y);
         if (check) {
-          return check;
+          auto result = std::chrono::high_resolution_clock::now() - begin;
+          int seconds = std::chrono::duration_cast<std::chrono::seconds>(result).count();
+          end_game(check, seconds);
+          return;
         }  
       }
       
       map[x][y].is_hidden = false;
       if (check_victory(game, map)){
         show_map(game, map);
-        return false;
+        auto result = std::chrono::high_resolution_clock::now() - begin;
+        int seconds = std::chrono::duration_cast<std::chrono::seconds>(result).count();
+        end_game(false, seconds);
+        return;
       }
     }
     show_map(game, map);
@@ -253,13 +265,7 @@ int main(int argc, char** argv){
   }
   else {
     Difficulty level = load_difficulty(CONFIG_FILE);
-    auto begin = std::chrono::high_resolution_clock::now();
-    
-    bool gameResults = start_game(level);
-    
-    auto result = std::chrono::high_resolution_clock::now() - begin;
-    int seconds = std::chrono::duration_cast<std::chrono::seconds>(result).count();
-    end_game(gameResults, seconds);
+    start_game(level);
   }
   return 0;
 }

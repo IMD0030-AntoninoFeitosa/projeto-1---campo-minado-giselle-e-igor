@@ -7,6 +7,7 @@
 #include <time.h> 
 #include <iomanip>
 #include <sstream>
+#include <chrono>
 
 #include "Game.h"
 
@@ -22,10 +23,22 @@ bool check_victory(Game game, Map map){
   return true;
 }
 
-bool player_input(short &x, short &y, Game game){
+bool player_input(short &x, short &y, Game game, std::chrono::high_resolution_clock::time_point &time, bool &firstMovement){
   char c;
   
-  std::cin>> c >> y >> x;
+  std::cin>> c;
+
+  if (c == 't'){
+    int seconds = 0;
+    if (!firstMovement){
+      auto result = std::chrono::high_resolution_clock::now() - time;
+      seconds = std::chrono::duration_cast<std::chrono::seconds>(result).count();
+    }
+    std::cout << seconds << " seconds have passed, and counting..." << std::endl;
+    return player_input(x,y,game,time,firstMovement);
+  }
+  
+  std::cin>> y >> x;
 
   while (std::cin.fail()){
     std::cin.clear();
@@ -33,11 +46,16 @@ bool player_input(short &x, short &y, Game game){
     std::cout << "INVALID MOVEMENT! Try again:" << std::endl;
     std::cin>> c >> y >> x;
   }
+
+  if (firstMovement){
+    time = std::chrono::high_resolution_clock::now();
+    firstMovement = false;
+  }
   
   if (c == 'f' || c == 'F'){
     if (x >= game.mapDimensions.y || y >= game.mapDimensions.x){
       std::cout << "INVALID COORDINATES! Try again:" << std::endl;
-      return player_input(x, y, game);
+      return player_input(x, y, game, time,firstMovement);
     }
     return true;
   }
@@ -45,7 +63,7 @@ bool player_input(short &x, short &y, Game game){
   else if (c == 'r' || c == 'R'){
     if (y >= game.mapDimensions.x || x >= game.mapDimensions.y){
       std::cout << "INVALID COORDINATES! Try again:" << std::endl;
-      return player_input(x, y, game);
+      return player_input(x, y, game, time,firstMovement);
     }
   }
   
