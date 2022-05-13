@@ -67,6 +67,12 @@ bool player_input(short &x, short &y, Game game, std::chrono::high_resolution_cl
     }
   }
   
+  else{
+    std::cout << "INVALID MOVEMENT! Maybe you meant to type 'r' or 'f' before the coordinates?" << std::endl;
+    std::cout << "Try again:" << std::endl;
+    return player_input(x, y, game, time,firstMovement);
+  }
+  
   return false;
 }
 
