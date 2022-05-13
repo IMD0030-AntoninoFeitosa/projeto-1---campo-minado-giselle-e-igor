@@ -35,6 +35,8 @@ bool player_input(short &x, short &y, Game game, std::chrono::high_resolution_cl
       seconds = std::chrono::duration_cast<std::chrono::seconds>(result).count();
     }
     std::cout << seconds << " seconds have passed, and counting..." << std::endl;
+    std::cin.clear();
+    std::cin.ignore();
     return player_input(x,y,game,time,firstMovement);
   }
   
@@ -55,6 +57,8 @@ bool player_input(short &x, short &y, Game game, std::chrono::high_resolution_cl
   if (c == 'f' || c == 'F'){
     if (x >= game.mapDimensions.y || y >= game.mapDimensions.x){
       std::cout << "INVALID COORDINATES! Try again:" << std::endl;
+      std::cin.clear();
+      std::cin.ignore();
       return player_input(x, y, game, time,firstMovement);
     }
     return true;
@@ -63,6 +67,8 @@ bool player_input(short &x, short &y, Game game, std::chrono::high_resolution_cl
   else if (c == 'r' || c == 'R'){
     if (y >= game.mapDimensions.x || x >= game.mapDimensions.y){
       std::cout << "INVALID COORDINATES! Try again:" << std::endl;
+      std::cin.clear();
+      std::cin.ignore();
       return player_input(x, y, game, time,firstMovement);
     }
   }
